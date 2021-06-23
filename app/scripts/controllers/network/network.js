@@ -88,6 +88,11 @@ export default class NetworkController extends EventEmitter {
     this._providerProxy = null;
     this._blockTrackerProxy = null;
 
+    // Once we get a block that has baseFee we do not need to check again so
+    // we have a variable that holds the latest EIP-1559 support status.
+    // clear (nullify) this variable on network change
+    this._supportsEIP1559 = null;
+
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
   }
 
@@ -118,6 +123,20 @@ export default class NetworkController extends EventEmitter {
     const provider = this._providerProxy;
     const blockTracker = this._blockTrackerProxy;
     return { provider, blockTracker };
+  }
+
+  /**
+   *
+   * @returns {boolean} true if current network supports EIP 1559
+   */
+  async getEIP1559Compatibility() {
+    if (this._supportsEIP1559) {
+      return this._supportsEIP1559;
+    }
+    const { blockTracker } = this.getProviderAndBlockTracker();
+    const latestBlock = await blockTracker.getLatestBlock();
+    this._supportsEIP1559 = typeof latestBlock.baseFee !== undefined;
+    return this._supportsEIP1559;
   }
 
   verifyNetwork() {
@@ -299,6 +318,8 @@ export default class NetworkController extends EventEmitter {
 
   _switchNetwork(opts) {
     this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
+    // Reset support for EIP 1559
+    this._supportsEIP1559 = null;
     this.setNetworkState('loading');
     this._configureProvider(opts);
     this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
