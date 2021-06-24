@@ -800,6 +800,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setRecoveryPhraseReminderLastShown,
         this.appStateController,
       ),
+      getMainAppString: nodeify(
+        this.appStateController.getMainAppString,
+        this.appStateController,
+      ),
 
       // EnsController
       tryReverseResolveAddress: nodeify(

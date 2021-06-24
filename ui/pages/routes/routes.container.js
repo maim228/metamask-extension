@@ -13,6 +13,7 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
+  getMainAppString,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -46,6 +47,7 @@ function mapStateToProps(state) {
     providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
     browserEnvironment: state.metamask.browserEnvironment,
+    getMainAppString,
   };
 }
 

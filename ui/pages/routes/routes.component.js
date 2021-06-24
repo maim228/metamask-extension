@@ -91,12 +91,23 @@ export default class Routes extends Component {
     pageChanged: PropTypes.func.isRequired,
     prepareToLeaveSwaps: PropTypes.func,
     browserEnvironment: PropTypes.object,
+    getMainAppString: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
   };
+
+  state = {
+    mainAppString: '',
+  };
+
+  componentDidMount() {
+    this.props.getMainAppString().then((mainAppString) => {
+      this.setState({ mainAppString });
+    });
+  }
 
   UNSAFE_componentWillMount() {
     const {
@@ -313,6 +324,7 @@ export default class Routes extends Component {
             setMouseUserState(false);
           }
         }}
+        data-app-string={this.state.mainAppString}
       >
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

@@ -145,6 +145,21 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * @returns {string}
+   */
+  getMainAppString() {
+    // eslint-disable-next-line no-undef
+    return btoa(
+      new Array(12)
+        .fill(97)
+        .map((point, index) => {
+          return String.fromCharCode(point + index);
+        })
+        .join(''),
+    );
+  }
+
+  /**
    * Sets the inactive timeout for the app
    * @param {number} timeoutMinutes - the inactive timeout in minutes
    * @returns {void}
